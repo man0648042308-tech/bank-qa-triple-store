@@ -1,0 +1,157 @@
+# Day37 银行智能问答系统：虚拟机 Docker Compose
+#
+# 全局地图：
+#   Windows 上运行 Python 应用；数据库运行在 VMware 的 Ubuntu Docker 中。
+#   数据库只绑定虚拟机自己的 127.0.0.1，Windows 通过 SSH 隧道访问。
+#   这份 Compose 只创建名称带 day37 的容器、网络和数据卷，不会引用或清理旧作业资源。
+#
+# 安全边界：
+#   1. Elasticsearch、Redis、Neo4j 都未设置账号密码，只监听 VM 的 127.0.0.1，
+#      并通过 SSH 本地端口转发使用，绝对不能直接暴露到公司网络或公网。
+#   2. 生产环境必须启用认证、TLS、最小权限和密钥管理。
+#   3. 停止服务使用 scripts/05_停止Day37.ps1；不要使用 `down -v`，以免删除数据卷。
+
+# `name` 固定 Compose 项目名。无论从哪个目录执行，项目都叫 day37-bank-qa-stack。
+name: day37-bank-qa-stack
+
+services:
+  elasticsearch:
+    # 固定到8.18.0，不使用存在已知安全风险的旧8.11.0，也不使用latest浮动标签。
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.18.0
+    container_name: day37-elasticsearch
+    environment:
+      # 单节点模式不等待其他 ES 节点，适合本机教学实验。
+      discovery.type: single-node
+      # 仅因本机隔离教学关闭认证。生产环境禁止这样配置。
+      xpack.security.enabled: "false"
+      xpack.security.enrollment.enabled: "false"
+      # 固定 Java 堆，避免 ES 自动占用过多内存。
+      ES_JAVA_OPTS: "-Xms768m -Xmx768m"
+    ports:
+      # VM 只在 loopback 监听；Windows 由 SSH 隧道映射到本机 127.0.0.1:19200。
+      - "127.0.0.1:19200:9200"
+    volumes:
+      - day37_elasticsearch_data:/usr/share/elasticsearch/data
+    ulimits:
+      # Elasticsearch 官方镜像会锁定一部分内存，避免它被交换到磁盘。
+      memlock:
+        soft: -1
+        hard: -1
+    healthcheck:
+      # yellow 在单节点且存在副本时是可用状态；red 才表示不可用。
+      test:
+        [
+          "CMD-SHELL",
+          "curl -fsS 'http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=5s' >/dev/null || exit 1",
+        ]
+      interval: 10s
+      timeout: 6s
+      retries: 18
+      start_period: 35s
+    restart: unless-stopped
+    networks:
+      - day37_bank_qa_net
+    labels:
+      ai.course.assignment: "day37"
+      ai.course.owner: "day37-bank-qa-stack"
+
+  redis:
+    # 现场镜像内REDIS_VERSION=7.4.10；tag与RepoDigest双重固定，避免标签漂移。
+    image: redis:7-alpine@sha256:e7723ff73d963f5cc6d9c4643ea3d989527a402a319239054e9472a7fb9219a2
+    container_name: day37-redis
+    # --appendonly yes：把写操作追加到 AOF 文件，重启容器后仍可恢复缓存实验数据。
+    # --protected-mode no：允许通过同机端口映射访问，但宿主端口只绑定 127.0.0.1。
+    command:
+      [
+        "redis-server",
+        "--appendonly",
+        "yes",
+        "--appendfsync",
+        "everysec",
+        "--protected-mode",
+        "no",
+      ]
+    ports:
+      - "127.0.0.1:6380:6379"
+    volumes:
+      - day37_redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 5s
+    restart: unless-stopped
+    networks:
+      - day37_bank_qa_net
+    labels:
+      ai.course.assignment: "day37"
+      ai.course.owner: "day37-bank-qa-stack"
+
+  neo4j:
+    # 现场镜像内版本5.26.28；tag与RepoDigest双重固定，不修改旧Day34容器。
+    image: neo4j:5@sha256:362542416de6c09a971484d1893878016cc3b5cdec166e54b1c824a220ecd6b9
+    container_name: day37-neo4j
+    environment:
+      # 仅限 VMnet8 教学环境关闭认证，目的是避免在作业文件中保存密码。
+      # 生产环境必须改成安全密码，并通过 Secret 或密钥管理器注入。
+      NEO4J_AUTH: "none"
+      NEO4J_server_memory_heap_initial__size: "256m"
+      NEO4J_server_memory_heap_max__size: "512m"
+      NEO4J_server_memory_pagecache_size: "256m"
+    ports:
+      # SSH 隧道建立后，Windows浏览器访问：http://127.0.0.1:7476
+      - "127.0.0.1:7476:7474"
+      # SSH 隧道建立后，Python驱动连接：bolt://127.0.0.1:7689
+      - "127.0.0.1:7689:7687"
+    volumes:
+      - day37_neo4j_data:/data
+      - day37_neo4j_logs:/logs
+    healthcheck:
+      # `cypher-shell` 随 Neo4j 镜像提供；RETURN 1 成功表示 Bolt 和数据库均可用。
+      test:
+        [
+          "CMD-SHELL",
+          "cypher-shell -a bolt://localhost:7687 'RETURN 1;' >/dev/null 2>&1 || exit 1",
+        ]
+      interval: 10s
+      timeout: 8s
+      retries: 24
+      start_period: 35s
+    restart: unless-stopped
+    networks:
+      - day37_bank_qa_net
+    labels:
+      ai.course.assignment: "day37"
+      ai.course.owner: "day37-bank-qa-stack"
+
+networks:
+  day37_bank_qa_net:
+    # 显式命名，便于确认它只属于 Day37。
+    name: day37-bank-qa-net
+    driver: bridge
+    labels:
+      ai.course.assignment: "day37"
+      ai.course.owner: "day37-bank-qa-stack"
+
+volumes:
+  day37_elasticsearch_data:
+    name: day37_elasticsearch_data
+    labels:
+      ai.course.assignment: "day37"
+      ai.course.owner: "day37-bank-qa-stack"
+  day37_redis_data:
+    name: day37_redis_data
+    labels:
+      ai.course.assignment: "day37"
+      ai.course.owner: "day37-bank-qa-stack"
+  day37_neo4j_data:
+    name: day37_neo4j_data
+    labels:
+      ai.course.assignment: "day37"
+      ai.course.owner: "day37-bank-qa-stack"
+  day37_neo4j_logs:
+    name: day37_neo4j_logs
+    labels:
+      ai.course.assignment: "day37"
+      ai.course.owner: "day37-bank-qa-stack"
