@@ -22,7 +22,7 @@ $script:Day37AllowedContainers = @(
     "day37-redis",
     "day37-neo4j"
 )
-$script:Day37ExpectedVmx = 'D:\AILLM2603SVN1\AiLLM2603.vmx'
+$script:Day37ExpectedVmx = '<你的VM目录>\AiLLM2603.vmx'
 $script:Day37AllowedNetwork = 'day37-bank-qa-net'
 $script:Day37AllowedVolumes = @(
     'day37_elasticsearch_data',
@@ -112,7 +112,7 @@ function Assert-Day37GuestUuid {
 
 function Get-Day37ExpectedVmxIp {
     <#
-    只接受精确虚拟机文件 D:\AILLM2603SVN1\AiLLM2603.vmx。
+    只接受精确虚拟机文件 <你的VM目录>\AiLLM2603.vmx。
     不扫描其他VM，也不从ARP邻居表猜测身份，避免误连另一台有Docker的主机。
     #>
     [CmdletBinding()]
@@ -124,7 +124,7 @@ function Get-Day37ExpectedVmxIp {
 
     $vmrunCandidates = @(
         # 本机VMware实际安装位置（2026-08-31已只读核验）。
-        "D:\VMware\vmrun.exe",
+        "<VMware安装目录>\vmrun.exe",
         "C:\Program Files (x86)\VMware\VMware Workstation\vmrun.exe",
         "C:\Program Files\VMware\VMware Workstation\vmrun.exe"
     )
