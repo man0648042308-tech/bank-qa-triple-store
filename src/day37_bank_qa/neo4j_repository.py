@@ -130,3 +130,4 @@ class FixtureGraphRetriever:
             product_to_hit(PRODUCT_BY_ID[product_id], source="neo4j", score=1.0 / rank)
             for rank, product_id in enumerate(product_ids[:top_k], start=1)
         ]
+

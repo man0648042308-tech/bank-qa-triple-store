@@ -1,7 +1,7 @@
 [project]
-name = "day37-bank-qa-homework"
+name = "bank-qa-project"
 version = "0.2.0"
-description = "Day37 银行智能问答系统：Elasticsearch + Redis + Neo4j + LangChain"
+description = "银行智能问答系统：Elasticsearch + Redis + Neo4j + LangChain"
 requires-python = ">=3.12,<3.13"
 dependencies = [
     "elasticsearch>=8.18,<8.19",
@@ -24,8 +24,8 @@ requires = ["setuptools>=75"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-packages = ["day37_bank_qa", "exercise05"]
-package-dir = {day37_bank_qa = "src/day37_bank_qa", exercise05 = "exercise05"}
+packages = ["_bank_qa", "exercise05"]
+package-dir = {_bank_qa = "src/_bank_qa", exercise05 = "exercise05"}
 
 [tool.pytest.ini_options]
 addopts = "-q"
@@ -37,3 +37,4 @@ target-version = "py312"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM"]
+

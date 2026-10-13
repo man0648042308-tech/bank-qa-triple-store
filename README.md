@@ -1,10 +1,10 @@
 > 本仓库为个人作品集公开版：AI 大模型应用开发实战项目，模拟数据，非生产系统。更多项目见作品集主页。
 
-# Day37：银行智能问答系统
+# 银行智能问答系统
 
 > 2026-09-04 最新：指定VM已由AI启动，三库部署、初始化、5组真实集成验证、4/4在线问答评估通过；55项pytest、9项VM身份检查、Ruff及4/4离线评估通过。先读 [最新验收记录](evidence/验收记录.md) 与 [阶段总结](docs/09_阶段总结与下一阶段_2026-09-04.md)。这是“真实三库＋确定性回答”的教学基础版，不是完整生产级RAG或真实LLM验收；PDF/ZIP生成结果以output目录及交付清单为准。
 
-这是 Day37 作业的可提交、可运行、可测试和可学习版本，覆盖原题四项要求：
+这是 作业的可提交、可运行、可测试和可学习版本，覆盖原题四项要求：
 
 1. 用 Typora 可直接打开的学习总结；
 2. Elasticsearch 与 Redis 高频面试题各 10 道；
@@ -15,7 +15,7 @@
 
 ## 先看哪个文件
 
-- 交作业：`Day37作业_提交版.md`
+- 交作业：`作业_提交版.md`
 - 不知道项目在做什么：`docs/00_项目全景与阅读索引.md`
 - 从零运行：`docs/01_从零复现操作手册.md`
 - 看懂关键代码：`docs/02_核心代码逐行逐词讲解.md`
@@ -36,12 +36,12 @@
 在 VS Code 的 PowerShell 终端中执行：
 
 ```powershell
-Set-Location "./Day37_Bank_QA_Homework"
+Set-Location "./_Bank_QA_project"
 $env:PYTHONIOENCODING = "utf-8"
 uv sync --python 3.12
 uv run python -m pytest -q
-uv run python -m day37_bank_qa.evaluation
-uv run python -m day37_bank_qa.main --offline --customer-id C001 --question "我有5000元，请推荐稳健产品" --top-k 3
+uv run python -m _bank_qa.evaluation
+uv run python -m _bank_qa.main --offline --customer-id C001 --question "我有5000元，请推荐稳健产品" --top-k 3
 ```
 
 说明：
@@ -55,7 +55,7 @@ uv run python -m day37_bank_qa.main --offline --customer-id C001 --question "我
 本项目采用“Windows 运行 Python，VMware 虚拟机运行 Docker 数据库”的分层方式：
 
 ```text
-Windows: ./Day37_Bank_QA_Homework
+Windows: ./_Bank_QA_project
    |
    +-- SSH隧道 127.0.0.1:19200 -> VM回环:19200 -> Elasticsearch
    +-- SSH隧道 127.0.0.1:6380  -> VM回环:6380  -> Redis
@@ -82,7 +82,7 @@ powershell -ExecutionPolicy Bypass -File ".\scripts\06_启动SSH隧道.ps1"
 真实银行问答还需初始化独立的中文银行知识索引：
 
 ```powershell
-uv run python -m day37_bank_qa.prepare_bank_index
+uv run python -m _bank_qa.prepare_bank_index
 ```
 
 ## 练习五最短入口
@@ -99,8 +99,8 @@ uv run python -m exercise05.run_exercise05 --keyword "phone" --min-price 100 --m
 ## FastAPI 可选加分入口
 
 ```powershell
-$env:DAY37_API_KEY = Read-Host "请为本次终端输入临时API密钥"
-uv run uvicorn day37_bank_qa.api:app --host 127.0.0.1 --port 8000
+$env:_API_KEY = Read-Host "请为本次终端输入临时API密钥"
+uv run uvicorn _bank_qa.api:app --host 127.0.0.1 --port 8000
 ```
 
 启动后浏览器访问：
@@ -109,10 +109,10 @@ uv run uvicorn day37_bank_qa.api:app --host 127.0.0.1 --port 8000
 http://127.0.0.1:8000/docs
 ```
 
-`/health`、`/products/search`、`/qa/ask`三个业务端点都要求请求头 `X-API-Key`。密钥只保存在当前PowerShell进程的 `DAY37_API_KEY` 环境变量中，不写进源码、Markdown、命令历史示例或提交包。示例请求：
+`/health`、`/products/search`、`/qa/ask`三个业务端点都要求请求头 `X-API-Key`。密钥只保存在当前PowerShell进程的 `_API_KEY` 环境变量中，不写进源码、Markdown、命令历史示例或提交包。示例请求：
 
 ```powershell
-$headers = @{ "X-API-Key" = $env:DAY37_API_KEY }
+$headers = @{ "X-API-Key" = $env:_API_KEY }
 Invoke-RestMethod -Uri "http://127.0.0.1:8000/health" -Headers $headers
 Invoke-RestMethod -Uri "http://127.0.0.1:8000/qa/ask" -Method Post -Headers $headers -ContentType "application/json" -Body '{"customer_id":"C001","question":"安心存款的起投金额是多少？","top_k":3}'
 ```
@@ -134,9 +134,9 @@ Invoke-RestMethod -Uri "http://127.0.0.1:8000/qa/ask" -Method Post -Headers $hea
 - Redis 缓存键必须包含客户编号、最新画像指纹、产品目录指纹、规范化问题摘要和数据版本；画像或产品目录变化后不得命中旧推荐。
 - ES、Redis、Neo4j的Docker端口只绑定VM的`127.0.0.1`；Windows只通过SSH隧道访问。
 - Elasticsearch服务器固定`8.18.0`，Python客户端锁定`8.18.1`（依赖合同`>=8.18,<8.19`）。
-- FastAPI三个业务端点必须校验`X-API-Key`，真实值只放`DAY37_API_KEY`当前进程环境变量。
-- Day37 容器、网络和数据卷使用隔离名称；不得删除 Day34～36 的旧资源。
-- Milvus 不属于 Day37 最低交付范围，本项目不依赖其启动。
+- FastAPI三个业务端点必须校验`X-API-Key`，真实值只放`_API_KEY`当前进程环境变量。
+- 容器、网络和数据卷使用隔离名称；不得删除 ～36 的旧资源。
+- Milvus 不属于 最低交付范围，本项目不依赖其启动。
 
 ## 学习完成标准
 
@@ -147,3 +147,4 @@ Invoke-RestMethod -Uri "http://127.0.0.1:8000/qa/ask" -Method Post -Headers $hea
 3. 自己制造一次数据库连接错误并恢复；
 4. 合上资料重写 `build_product_search_body()` 的核心条件；
 5. 不看稿口述 Redis、ES、Neo4j 各自的职责以及硬过滤为什么不能交给 LLM。
+

@@ -85,3 +85,4 @@ class FixtureTextRetriever:
             ranked.append(product_to_hit(product, source="elasticsearch", score=score))
         ranked.sort(key=lambda hit: (-hit.score, hit.source_id))
         return ranked[:top_k]
+

@@ -129,3 +129,4 @@ if __name__ == "__main__":
     parser.add_argument("destination", type=Path)
     arguments = parser.parse_args()
     build_pdf(arguments.source, arguments.destination)
+

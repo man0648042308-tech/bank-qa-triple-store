@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
 Day37 虚拟机脚本共用函数。
 
@@ -479,3 +479,4 @@ function Assert-Day37ContainerOwned {
     }
     return $container
 }
+
