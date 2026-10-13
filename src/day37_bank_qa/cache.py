@@ -93,3 +93,4 @@ class RedisTextCache:
         # ``ex`` 让 Redis 自动清理过期项，避免作业演示不断留下永久键。
         self._client.set(key, value, ex=ttl_seconds)  # type: ignore[attr-defined]
 
+

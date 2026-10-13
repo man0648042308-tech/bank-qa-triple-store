@@ -131,3 +131,4 @@ class FixtureGraphRetriever:
             for rank, product_id in enumerate(product_ids[:top_k], start=1)
         ]
 
+

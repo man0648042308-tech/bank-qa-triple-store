@@ -86,3 +86,4 @@ class FixtureTextRetriever:
         ranked.sort(key=lambda hit: (-hit.score, hit.source_id))
         return ranked[:top_k]
 
+

@@ -130,3 +130,4 @@ if __name__ == "__main__":
     arguments = parser.parse_args()
     build_pdf(arguments.source, arguments.destination)
 
+

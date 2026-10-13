@@ -110,3 +110,4 @@ def test_bank_index_contract_uses_day37_ngram_without_ik_dependency() -> None:
     assert mappings["name"]["analyzer"] == "day37_cn_ngram"
     assert mappings["min_investment"]["type"] == "integer"
 
+
