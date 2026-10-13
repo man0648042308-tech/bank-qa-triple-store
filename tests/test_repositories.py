@@ -111,3 +111,4 @@ def test_bank_index_contract_uses_day37_ngram_without_ik_dependency() -> None:
     assert mappings["min_investment"]["type"] == "integer"
 
 
+
