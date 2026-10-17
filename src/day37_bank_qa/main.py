@@ -30,7 +30,7 @@ class ServiceClients:
 def build_service_clients(settings: Settings) -> ServiceClients:
     """只创建客户端对象；是否连通由实际查询或验证脚本决定。"""
 
-    # 课程Day37隔离容器使用 ``NEO4J_AUTH=none``，所以密码为空时传 ``auth=None``；
+    # 项目隔离容器使用 ``NEO4J_AUTH=none``，所以密码为空时传 ``auth=None``；
     # 若以后连接启用认证的服务，只需通过进程环境变量提供密码，无需改源码。
     neo4j_auth = (
         (settings.neo4j_user, settings.neo4j_password)

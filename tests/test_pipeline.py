@@ -155,4 +155,4 @@ def test_optional_llm_unsafe_text_falls_back_to_deterministic_answer() -> None:
 
     assert "P999" not in answer.text
     assert "保证收益" not in answer.text
-    assert "课程演示" in answer.text
+    assert "功能演示" in answer.text

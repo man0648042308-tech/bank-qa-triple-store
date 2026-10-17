@@ -42,7 +42,7 @@ class ElasticsearchBankRetriever:
                             }
                         }
                     ],
-                    # 即使专属索引被误写入其他课程数据，也只召回dataset_id=day37。
+                    # 即使专属索引被误写入其他项目数据，也只召回dataset_id=day37。
                     "filter": [{"term": {"dataset_id": "day37"}}],
                 }
             },
@@ -70,7 +70,7 @@ class ElasticsearchBankRetriever:
 
 
 class FixtureTextRetriever:
-    """离线教学检索器：使用固定数据模拟“ES已经召回候选”的结果。"""
+    """离线离线检索器：使用固定数据模拟“ES已经召回候选”的结果。"""
 
     def search(self, query: str, *, top_k: int = 10) -> list[RetrievalHit]:
         normalized = query.strip().casefold()

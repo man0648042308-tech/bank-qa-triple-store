@@ -362,7 +362,7 @@ function Get-Day37RemoteNamedResource {
 function Assert-Day37NamedResourceOwnedOrAbsent {
     <#
     同名网络/卷不存在时允许Compose创建；存在时必须同时有：
-    Day37作业标签、owner标签、Compose项目标签。缺一项都拒绝复用。
+    项目标签、owner标签、Compose项目标签。缺一项都拒绝复用。
     #>
     [CmdletBinding()]
     param(
@@ -377,10 +377,10 @@ function Assert-Day37NamedResourceOwnedOrAbsent {
         return
     }
 
-    $assignment = Get-Day37LabelValue -Labels $resource.Labels -Name 'ai.course.assignment'
-    $owner = Get-Day37LabelValue -Labels $resource.Labels -Name 'ai.course.owner'
+    $project = Get-Day37LabelValue -Labels $resource.Labels -Name 'ai.project.name'
+    $owner = Get-Day37LabelValue -Labels $resource.Labels -Name 'ai.project.owner'
     $composeProject = Get-Day37LabelValue -Labels $resource.Labels -Name 'com.docker.compose.project'
-    if ($assignment -ne 'day37' -or
+    if ($project -ne 'day37' -or
         $owner -ne 'day37-bank-qa-stack' -or
         $composeProject -ne 'day37-bank-qa-stack') {
         throw "同名${ResourceType}资源 $ResourceName 的Day37/Compose标签不完整，拒绝复用。"
@@ -401,10 +401,10 @@ function Assert-Day37NamedResourceOwned {
     if ($null -eq $resource) {
         throw "Day37 ${ResourceType}资源不存在：$ResourceName"
     }
-    $assignment = Get-Day37LabelValue -Labels $resource.Labels -Name 'ai.course.assignment'
-    $owner = Get-Day37LabelValue -Labels $resource.Labels -Name 'ai.course.owner'
+    $project = Get-Day37LabelValue -Labels $resource.Labels -Name 'ai.project.name'
+    $owner = Get-Day37LabelValue -Labels $resource.Labels -Name 'ai.project.owner'
     $composeProject = Get-Day37LabelValue -Labels $resource.Labels -Name 'com.docker.compose.project'
-    if ($assignment -ne 'day37' -or
+    if ($project -ne 'day37' -or
         $owner -ne 'day37-bank-qa-stack' -or
         $composeProject -ne 'day37-bank-qa-stack') {
         throw "Day37 ${ResourceType}资源 $ResourceName 的所有权标签不符合合同。"
@@ -453,9 +453,9 @@ function Assert-Day37ContainerOwnedOrAbsent {
         return
     }
 
-    $assignment = $container.Config.Labels.'ai.course.assignment'
-    $owner = $container.Config.Labels.'ai.course.owner'
-    if ($assignment -ne 'day37' -or $owner -ne 'day37-bank-qa-stack') {
+    $project = $container.Config.Labels.'ai.project.name'
+    $owner = $container.Config.Labels.'ai.project.owner'
+    if ($project -ne 'day37' -or $owner -ne 'day37-bank-qa-stack') {
         throw "同名容器 $ContainerName 已存在，但不属于 Day37；为保护旧资源，部署已停止。"
     }
 }
@@ -472,9 +472,9 @@ function Assert-Day37ContainerOwned {
     if ($null -eq $container) {
         throw "Day37 容器不存在：$ContainerName"
     }
-    $assignment = $container.Config.Labels.'ai.course.assignment'
-    $owner = $container.Config.Labels.'ai.course.owner'
-    if ($assignment -ne 'day37' -or $owner -ne 'day37-bank-qa-stack') {
+    $project = $container.Config.Labels.'ai.project.name'
+    $owner = $container.Config.Labels.'ai.project.owner'
+    if ($project -ne 'day37' -or $owner -ne 'day37-bank-qa-stack') {
         throw "容器 $ContainerName 的标签不属于 Day37，拒绝操作。"
     }
     return $container

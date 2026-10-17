@@ -29,7 +29,7 @@ class Settings:
 
     @classmethod
     def from_env(cls) -> Settings:
-        """读取环境变量；未设置时使用无敏感信息的课程默认值。"""
+        """读取环境变量；未设置时使用无敏感信息的项目默认值。"""
 
         vm_host = os.getenv("VM_HOST", "192.168.220.77")
         service_host = os.getenv("DAY37_SERVICE_HOST", "127.0.0.1")

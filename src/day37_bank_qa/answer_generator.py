@@ -29,7 +29,7 @@ class InvokableModel(Protocol):
 
 
 class DeterministicAnswerGenerator:
-    """不用外部模型、每次输出相同的回答器，适合作业验收。"""
+    """不用外部模型、每次输出相同的回答器，适合项目验收。"""
 
     def generate(
         self,
@@ -73,7 +73,7 @@ class DeterministicAnswerGenerator:
             f"当前可用金额为{customer.available_amount}元。\n"
             "经过检索与硬规则过滤，可参考以下产品：\n"
             + "\n".join(product_lines)
-            + "\n以上内容仅用于课程演示，不构成真实投资建议。"
+            + "\n以上内容仅用于功能演示，不构成真实投资建议。"
         )
         return Answer(
             question=question,
@@ -137,7 +137,7 @@ class OptionalLLMAnswerGenerator:
             f"- [{hit.source}:{hit.source_id}] {hit.title}: {hit.content}" for hit in hits
         )
         prompt = (
-            "你是银行课程演示助手。只能使用给定证据回答，不能新增产品或承诺收益。\n"
+            "你是银行功能演示助手。只能使用给定证据回答，不能新增产品或承诺收益。\n"
             f"客户风险等级：{customer.risk_level}\n"
             f"客户可用金额：{customer.available_amount}\n"
             f"问题：{question}\n"

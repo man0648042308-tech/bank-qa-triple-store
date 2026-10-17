@@ -102,7 +102,7 @@ wheels = [
 ]
 
 [[package]]
-name = "day37-bank-qa-homework"
+name = "bank-qa-project"
 version = "0.2.0"
 source = { editable = "." }
 dependencies = [

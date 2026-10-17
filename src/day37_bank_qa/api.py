@@ -73,8 +73,8 @@ class OfflineProductSearch:
             )
             items.append(
                 ProductSearchHit(
-                    # 离线API复用银行产品ID（如P001），练习五真实ES则使用整数ID。
-                    # ``ProductSearchHit`` 严格遵守练习五整数合同，所以这里取数字部分。
+                    # 离线API复用银行产品ID（如P001），示例五真实ES则使用整数ID。
+                    # ``ProductSearchHit`` 严格遵守示例五整数合同，所以这里取数字部分。
                     product_id=int(product.product_id.removeprefix("P")),
                     name=product.name,
                     highlighted_name=highlighted_name,

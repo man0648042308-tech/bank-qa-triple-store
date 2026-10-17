@@ -3,7 +3,7 @@
 # 全局地图：
 #   Windows 上运行 Python 应用；数据库运行在 VMware 的 Ubuntu Docker 中。
 #   数据库只绑定虚拟机自己的 127.0.0.1，Windows 通过 SSH 隧道访问。
-#   这份 Compose 只创建名称带 的容器、网络和数据卷，不会引用或清理旧作业资源。
+#   这份 Compose 只创建名称带 的容器、网络和数据卷，不会引用或清理旧项目资源。
 #
 # 安全边界：
 #   1. Elasticsearch、Redis、Neo4j 都未设置账号密码，只监听 VM 的 127.0.0.1，
@@ -20,9 +20,9 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.18.0
     container_name: elasticsearch
     environment:
-      # 单节点模式不等待其他 ES 节点，适合本机教学实验。
+      # 单节点模式不等待其他 ES 节点，适合本机本地实验。
       discovery.type: single-node
-      # 仅因本机隔离教学关闭认证。生产环境禁止这样配置。
+      # 仅因本机隔离技术演示关闭认证。生产环境禁止这样配置。
       xpack.security.enabled: "false"
       xpack.security.enrollment.enabled: "false"
       # 固定 Java 堆，避免 ES 自动占用过多内存。
@@ -52,9 +52,8 @@ services:
     networks:
       - _bank_qa_net
     labels:
-      ai.course.assignment: ""
-      ai.course.owner: "bank-qa-stack"
-
+      ai.project.name: "day37"
+      ai.project.owner: "day37-bank-qa-stack"
   redis:
     # 现场镜像内REDIS_VERSION=7.4.10；tag与RepoDigest双重固定，避免标签漂移。
     image: redis:7-alpine@sha256:e7723ff73d963f5cc6d9c4643ea3d989527a402a319239054e9472a7fb9219a2
@@ -85,15 +84,14 @@ services:
     networks:
       - _bank_qa_net
     labels:
-      ai.course.assignment: ""
-      ai.course.owner: "bank-qa-stack"
-
+      ai.project.name: "day37"
+      ai.project.owner: "day37-bank-qa-stack"
   neo4j:
     # 现场镜像内版本5.26.28；tag与RepoDigest双重固定，不修改旧Day34容器。
     image: neo4j:5@sha256:362542416de6c09a971484d1893878016cc3b5cdec166e54b1c824a220ecd6b9
     container_name: neo4j
     environment:
-      # 仅限 VMnet8 教学环境关闭认证，目的是避免在作业文件中保存密码。
+      # 仅限 VMnet8 本地验证环境关闭认证，目的是避免在项目文件中保存密码。
       # 生产环境必须改成安全密码，并通过 Secret 或密钥管理器注入。
       NEO4J_AUTH: "none"
       NEO4J_server_memory_heap_initial__size: "256m"
@@ -122,39 +120,34 @@ services:
     networks:
       - _bank_qa_net
     labels:
-      ai.course.assignment: ""
-      ai.course.owner: "bank-qa-stack"
-
+      ai.project.name: "day37"
+      ai.project.owner: "day37-bank-qa-stack"
 networks:
   _bank_qa_net:
     # 显式命名，便于确认它只属于 。
     name: bank-qa-net
     driver: bridge
     labels:
-      ai.course.assignment: ""
-      ai.course.owner: "bank-qa-stack"
-
+      ai.project.name: "day37"
+      ai.project.owner: "day37-bank-qa-stack"
 volumes:
   _elasticsearch_data:
     name: _elasticsearch_data
     labels:
-      ai.course.assignment: ""
-      ai.course.owner: "bank-qa-stack"
+      ai.project.name: "day37"
+      ai.project.owner: "day37-bank-qa-stack"
   _redis_data:
     name: _redis_data
     labels:
-      ai.course.assignment: ""
-      ai.course.owner: "bank-qa-stack"
+      ai.project.name: "day37"
+      ai.project.owner: "day37-bank-qa-stack"
   _neo4j_data:
     name: _neo4j_data
     labels:
-      ai.course.assignment: ""
-      ai.course.owner: "bank-qa-stack"
+      ai.project.name: "day37"
+      ai.project.owner: "day37-bank-qa-stack"
   _neo4j_logs:
     name: _neo4j_logs
     labels:
-      ai.course.assignment: ""
-      ai.course.owner: "bank-qa-stack"
-
-
-
+      ai.project.name: "day37"
+      ai.project.owner: "day37-bank-qa-stack"

@@ -52,7 +52,7 @@ def build_cache_key(
 
 
 class InMemoryTTLCache:
-    """无需外部服务的教学缓存，支持注入时钟以便稳定测试过期逻辑。"""
+    """无需外部服务的示例缓存，支持注入时钟以便稳定测试过期逻辑。"""
 
     def __init__(self, clock: Callable[[], float] = time.monotonic) -> None:
         self._clock = clock
@@ -90,7 +90,7 @@ class RedisTextCache:
     def set(self, key: str, value: str, ttl_seconds: int) -> None:
         if ttl_seconds <= 0:
             raise ValueError("ttl_seconds 必须大于 0")
-        # ``ex`` 让 Redis 自动清理过期项，避免作业演示不断留下永久键。
+        # ``ex`` 让 Redis 自动清理过期项，避免项目演示不断留下永久键。
         self._client.set(key, value, ex=ttl_seconds)  # type: ignore[attr-defined]
 
 

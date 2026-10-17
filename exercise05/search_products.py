@@ -1,4 +1,4 @@
-"""执行练习五查询，并把ES原始字典转换成容易理解的结构化结果。"""
+"""执行示例五查询，并把ES原始字典转换成容易理解的结构化结果。"""
 
 from __future__ import annotations
 
@@ -93,7 +93,7 @@ def search_products(
     max_price: float | None = None,
     category: str | None = None,
 ) -> ProductSearchResponse:
-    """函数式入口：内部仍复用适配器，方便课堂直接调用。"""
+    """函数式入口：内部仍复用适配器，方便演示直接调用。"""
 
     return ElasticsearchProductSearch(client, index_name).search_products(
         keyword=keyword,

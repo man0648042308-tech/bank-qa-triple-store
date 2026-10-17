@@ -2,29 +2,29 @@
 
 # 银行智能问答系统
 
-> 2026-09-04 最新：指定VM已由AI启动，三库部署、初始化、5组真实集成验证、4/4在线问答评估通过；55项pytest、9项VM身份检查、Ruff及4/4离线评估通过。先读 [最新验收记录](evidence/验收记录.md) 与 [阶段总结](docs/09_阶段总结与下一阶段_2026-09-04.md)。这是“真实三库＋确定性回答”的教学基础版，不是完整生产级RAG或真实LLM验收；PDF/ZIP生成结果以output目录及交付清单为准。
+> 2026-09-04 最新：指定VM已由AI启动，三库部署、初始化、5组真实集成验证、4/4在线问答评估通过；55项pytest、9项VM身份检查、Ruff及4/4离线评估通过。先读 [最新验收记录](evidence/验收记录.md) 与 [阶段总结](docs/09_阶段总结与下一阶段_2026-09-04.md)。这是“真实三库＋确定性回答”的可复现基础版，不是完整生产级RAG或真实LLM验收；PDF/ZIP生成结果以output目录及交付清单为准。
 
-这是 作业的可提交、可运行、可测试和可学习版本，覆盖原题四项要求：
+这是一个项目的可提交、可运行、可测试和可学习版本，覆盖原始需求四项要求：
 
-1. 用 Typora 可直接打开的学习总结；
+1. 用 Typora 可直接打开的技术总结；
 2. Elasticsearch 与 Redis 高频面试题各 10 道；
-3. Elasticsearch“练习五：复合查询与高亮显示”；
+3. Elasticsearch“示例五：复合查询与高亮显示”；
 4. 基于 Elasticsearch、Redis、Neo4j 与 LangChain 思路的银行智能问答系统。
 
-> 重要：本轮AI已完成真实三库联调，但不等于学习者已经掌握。独立能力必须通过“自己运行 → 故障恢复 → 合上资料重写 → 口述解释”留下证据。
+> 重要：本轮AI已完成真实三库联调，但不等于使用者已经掌握。独立能力必须通过“自己运行 → 故障恢复 → 合上资料重写 → 口述解释”留下证据。
 
 ## 先看哪个文件
 
-- 交作业：`作业_提交版.md`
+- 提交项目成果：`Day37作业_提交版.md`
 - 不知道项目在做什么：`docs/00_项目全景与阅读索引.md`
 - 从零运行：`docs/01_从零复现操作手册.md`
 - 看懂关键代码：`docs/02_核心代码逐行逐词讲解.md`
-- 单独复习当天内容：`docs/03_当天学习总结.md`
+- 单独回顾当天内容：`docs/03_当天学习总结.md`
 - ES 面试：`docs/04_ES高频面试题10道.md`
 - Redis 面试：`docs/05_Redis高频面试题10道.md`
 - 出错时：`docs/06_常见报错与排查.md`
-- 练习独立完成：`docs/07_独立复现训练.md`
-- 交作业前核对：`docs/08_提交清单.md`
+- 示例独立完成：`docs/07_独立复现训练.md`
+- 提交项目成果前核对：`docs/08_提交清单.md`
 - 实际验收与未覆盖范围：`evidence/验收记录.md`；打包产物：`output/`
 
 ## 项目的一句话流程
@@ -46,7 +46,7 @@ uv run python -m _bank_qa.main --offline --customer-id C001 --question "我有50
 
 说明：
 
-- `--offline` 显式使用内存中的教学数据；即使省略它也默认离线，不要求 Elasticsearch、Redis 或 Neo4j 已启动；
+- `--offline` 显式使用内存中的技术演示数据；即使省略它也默认离线，不要求 Elasticsearch、Redis 或 Neo4j 已启动；
 - 离线结果用于先学业务流程和运行测试，不代表三库已经连通；
 - 2026-08-31本地离线验收：47项pytest通过、Ruff通过、compileall通过、固定评估集4/4且分数1.0；这不等于VM三库已经真实联调。
 
@@ -85,7 +85,7 @@ powershell -ExecutionPolicy Bypass -File ".\scripts\06_启动SSH隧道.ps1"
 uv run python -m _bank_qa.prepare_bank_index
 ```
 
-## 练习五最短入口
+## 示例五最短入口
 
 数据库启动并初始化产品索引后：
 
@@ -94,7 +94,7 @@ uv run python -m exercise05.prepare_product_index
 uv run python -m exercise05.run_exercise05 --keyword "phone" --min-price 100 --max-price 800 --category "electronics"
 ```
 
-需要理解的合同：练习商品名使用空格，例如 `phone model 001`；价格是 `float`；关键词进入 `bool.must`；价格和品类进入 `bool.filter`；结果最多 10 条；同时返回总命中数，并用 `<em>...</em>` 标出名称中的关键词。若同名索引已经存在但 mapping、文档ID、数量、字段、值或类型不符，初始化必须拒绝继续，不能删除未知索引制造通过。
+需要理解的合同：示例商品名使用空格，例如 `phone model 001`；价格是 `float`；关键词进入 `bool.must`；价格和品类进入 `bool.filter`；结果最多 10 条；同时返回总命中数，并用 `<em>...</em>` 标出名称中的关键词。若同名索引已经存在但 mapping、文档ID、数量、字段、值或类型不符，初始化必须拒绝继续，不能删除未知索引制造通过。
 
 ## FastAPI 可选加分入口
 
@@ -127,7 +127,7 @@ Invoke-RestMethod -Uri "http://127.0.0.1:8000/qa/ask" -Method Post -Headers $hea
 
 ## 安全边界
 
-- 项目数据均为虚构教学数据，不是真实银行客户数据。
+- 项目数据均为虚构技术演示数据，不是真实银行客户数据。
 - `.env`、密码、API Key、Token 不进入提交包。
 - Neo4j 查询必须参数化，禁止拼接客户输入。
 - 金融适配规则是硬门槛：风险越级、金额不足、产品非在售均不得推荐。
@@ -143,7 +143,7 @@ Invoke-RestMethod -Uri "http://127.0.0.1:8000/qa/ask" -Method Post -Headers $hea
 “看到懂”只算第一层。真正完成至少需要：
 
 1. 自己从根目录运行全部测试；
-2. 自己运行练习五并解释查询体；
+2. 自己运行示例五并解释查询体；
 3. 自己制造一次数据库连接错误并恢复；
 4. 合上资料重写 `build_product_search_body()` 的核心条件；
 5. 不看稿口述 Redis、ES、Neo4j 各自的职责以及硬过滤为什么不能交给 LLM。

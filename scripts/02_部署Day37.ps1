@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
 把本地 Compose/Cypher 文件复制到虚拟机，并只创建 Day37 隔离容器。
 
@@ -30,7 +30,7 @@ $composePath = Join-Path $projectRoot 'infra\compose.vm.yml'
 $initCypherPath = Join-Path $projectRoot 'cypher\01_init_day37_bank_graph.cypher'
 $verifyCypherPath = Join-Path $projectRoot 'cypher\02_verify_day37_readonly.cypher'
 
-# 同名容器存在时，必须先证明它属于本作业；否则立刻停止。
+# 同名容器存在时，必须先证明它属于本项目；否则立刻停止。
 foreach ($containerName in $script:Day37AllowedContainers) {
     Assert-Day37ContainerOwnedOrAbsent -VmIp $resolvedIp -ContainerName $containerName
 }

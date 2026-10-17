@@ -1,6 +1,6 @@
-"""创建练习五专用索引并写入固定演示数据。
+"""创建示例五专用索引并写入固定演示数据。
 
-脚本不会删除任何索引。若同名索引的映射或文档ID不属于本作业，脚本会拒绝继续，
+脚本不会删除任何索引。若同名索引的映射或文档ID不属于本项目，脚本会拒绝继续，
 避免通过覆盖或删除未知资源来制造“验收通过”。
 """
 
@@ -15,7 +15,7 @@ ELECTRONICS_NAMES = ("phone", "laptop", "tablet", "headphones")
 
 
 def build_exercise_products(count: int = 100) -> tuple[dict[str, object], ...]:
-    """按照练习二字段合同生成固定数据；同样输入永远得到同样结果。"""
+    """按照示例二字段合同生成固定数据；同样输入永远得到同样结果。"""
 
     products: list[dict[str, object]] = []
     for product_id in range(1, count + 1):
@@ -73,7 +73,7 @@ def _assert_mapping_contract(client: Elasticsearch, index_name: str) -> None:
     actual_types = {name: config.get("type") for name, config in actual.items()}
     if actual_types != expected_types:
         raise RuntimeError(
-            f"索引 {index_name} 的mapping不符合练习合同；"
+            f"索引 {index_name} 的mapping不符合示例合同；"
             f"expected={expected_types}, actual={actual_types}。为保护未知数据，程序拒绝删除索引。"
         )
 
@@ -120,14 +120,14 @@ def _assert_document_ownership(
     total, actual_by_id = _read_existing_documents(client, index_name)
     if total != len(actual_by_id):
         raise RuntimeError(
-            f"索引 {index_name} 实际文档数为{total}，超出可验证的本作业文档；拒绝继续。"
+            f"索引 {index_name} 实际文档数为{total}，超出可验证的本项目文档；拒绝继续。"
         )
     unexpected_ids = sorted(set(actual_by_id) - set(expected_by_id))
     if unexpected_ids:
         raise RuntimeError(
             f"索引 {index_name} 含未知文档ID {unexpected_ids}；为保护未知数据，程序拒绝继续。"
         )
-    # 编号相同不代表内容属于本作业。写入前逐项核对，保留不符的旧文档。
+    # 编号相同不代表内容属于本项目。写入前逐项核对，保留不符的旧文档。
     # Python的1000 == 1000.0为真，因此还必须比较type，不能只用字典相等。
     for document_id, actual in actual_by_id.items():
         expected = expected_by_id[document_id]

@@ -12,7 +12,7 @@ def build_product_search_body(
     max_price: float | None = None,
     category: str | None = None,
 ) -> dict[str, Any]:
-    """构造满足练习五合同的 ``bool.must + bool.filter`` 查询。
+    """构造满足示例五合同的 ``bool.must + bool.filter`` 查询。
 
     ``keyword`` 影响相关度，所以放入 ``must``；价格和品类只是准入条件，不需要
     参与评分，所以放入 ``filter``。判断价格时使用 ``is not None``，这样合法的0元

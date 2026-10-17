@@ -1,7 +1,7 @@
 """创建银行问答专用ES索引并写入五个固定产品。
 
 只操作 ``day37_bank_knowledge_v1``。脚本不会删除索引；遇到未知映射或文档ID时
-直接拒绝，重复运行只会用相同产品ID更新本作业五条文档。中文教学数据使用
+直接拒绝，重复运行只会用相同产品ID更新本项目五条文档。中文技术演示数据使用
 1～2字的ngram分析器，避免依赖必须与服务器完全同版的IK插件。
 """
 
@@ -138,7 +138,7 @@ def _assert_bank_ownership(
     total, actual = _read_bank_documents(client, index_name)
     if total != len(actual):
         raise RuntimeError(
-            f"索引 {index_name} 实际文档数为{total}，超出可验证的本作业文档；拒绝继续。"
+            f"索引 {index_name} 实际文档数为{total}，超出可验证的本项目文档；拒绝继续。"
         )
     unexpected_ids = sorted(set(actual) - set(expected))
     if unexpected_ids:

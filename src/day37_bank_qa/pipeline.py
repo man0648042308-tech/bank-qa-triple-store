@@ -209,7 +209,7 @@ class BankQAPipeline:
 
 
 def build_offline_pipeline() -> BankQAPipeline:
-    """构建不连接ES/Redis/Neo4j也可以运行的完整教学流水线。"""
+    """构建不连接ES/Redis/Neo4j也可以运行的完整技术演示流水线。"""
 
     return BankQAPipeline(
         customer_repository=FixtureCustomerRepository(),

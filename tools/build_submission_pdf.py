@@ -1,4 +1,4 @@
-"""将本作业Markdown排成PDF；维护工具依赖reportlab，不影响银行程序。
+"""将本项目Markdown排成PDF；维护工具依赖reportlab，不影响银行程序。
 
 使用Codex自带文档Python运行时；只读取Markdown，不执行文档中的代码。
 """
@@ -109,7 +109,7 @@ def build_pdf(source: Path, destination: Path) -> None:
         canvas.saveState()
         canvas.setFont("YaHei", 8)
         canvas.setFillColor(colors.HexColor("#657786"))
-        canvas.drawString(42, 22, "Day37 银行智能问答系统 | 教学参考")
+        canvas.drawString(42, 22, "Day37 银行智能问答系统 | 技术演示参考")
         canvas.drawRightString(A4[0] - 42, 22, str(document.page))
         canvas.restoreState()
 
@@ -117,7 +117,7 @@ def build_pdf(source: Path, destination: Path) -> None:
     document = SimpleDocTemplate(
         str(destination), pagesize=A4, rightMargin=42, leftMargin=42,
         topMargin=34, bottomMargin=38,
-        title="Day37 银行智能问答系统作业", author="课程作业参考",
+        title="Day37 银行智能问答系统项目", author="项目交付参考",
     )
     document.build(flow, onFirstPage=footer, onLaterPages=footer)
     print(f"PDF_CREATED {destination.name}")

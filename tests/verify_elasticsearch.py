@@ -28,7 +28,7 @@ def main() -> None:
     if not client.ping():
         raise RuntimeError(f"Elasticsearch不可达：{settings.es_url}")
     if not client.indices.exists(index=settings.exercise_index):
-        raise RuntimeError(f"练习索引不存在：{settings.exercise_index}，请先运行初始化脚本")
+        raise RuntimeError(f"示例索引不存在：{settings.exercise_index}，请先运行初始化脚本")
     if not client.indices.exists(index=settings.es_index):
         raise RuntimeError(f"银行知识索引不存在：{settings.es_index}，请先运行初始化脚本")
 
@@ -48,13 +48,13 @@ def main() -> None:
         sort=[{"product_id": {"order": "asc"}}],
     )
     exercise_hits = exercise_raw["hits"]["hits"]
-    assert _total(exercise_raw) == 100, "练习索引必须恰好100条"
+    assert _total(exercise_raw) == 100, "示例索引必须恰好100条"
     assert len(exercise_hits) == 100
     expected_by_id = {int(item["product_id"]): item for item in EXERCISE_PRODUCTS}
     actual_by_id = {
         int(hit["_source"]["product_id"]): hit["_source"] for hit in exercise_hits
     }
-    assert actual_by_id == expected_by_id, "练习索引字段、值或类型与固定合同不一致"
+    assert actual_by_id == expected_by_id, "示例索引字段、值或类型与固定合同不一致"
     assert all(
         type(source["product_id"]) is int
         and type(source["name"]) is str
@@ -63,7 +63,7 @@ def main() -> None:
         and type(source["stock"]) is int
         and type(source["release_date"]) is str
         for source in actual_by_id.values()
-    ), "练习索引六个字段的Python反序列化类型不符合合同"
+    ), "示例索引六个字段的Python反序列化类型不符合合同"
 
     analysis = client.indices.analyze(
         index=settings.exercise_index,

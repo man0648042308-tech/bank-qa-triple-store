@@ -1,4 +1,4 @@
-"""固定的虚构银行数据，保证离线测试与课堂演示每次结果一致。"""
+"""固定的虚构银行数据，保证离线测试与功能演示每次结果一致。"""
 
 from .models import Customer, Product, RetrievalHit
 

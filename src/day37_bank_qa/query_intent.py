@@ -13,7 +13,7 @@ from .models import Product
 
 
 class QueryIntent(StrEnum):
-    """本作业支持的三类问题。"""
+    """本项目支持的三类问题。"""
 
     RECOMMENDATION = "recommendation"
     PRODUCT_FACT = "product_fact"

@@ -1,4 +1,4 @@
-"""练习五命令行演示：输入可选条件并打印总命中数、高亮名称和相关度。"""
+"""示例五命令行演示：输入可选条件并打印总命中数、高亮名称和相关度。"""
 
 from __future__ import annotations
 
@@ -14,7 +14,7 @@ from .search_products import ElasticsearchProductSearch
 def build_parser() -> argparse.ArgumentParser:
     """定义命令行参数；不填写的条件会保持为 ``None``。"""
 
-    parser = argparse.ArgumentParser(description="运行Day37 Elasticsearch练习五")
+    parser = argparse.ArgumentParser(description="运行Day37 Elasticsearch示例五")
     parser.add_argument("--keyword", help="产品名称关键词，例如：稳健")
     parser.add_argument("--min-price", type=float, help="最低价格（含边界，可带小数）")
     parser.add_argument("--max-price", type=float, help="最高价格（含边界，可带小数）")
@@ -23,7 +23,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main() -> None:
-    """连接课程虚拟机ES并运行查询。"""
+    """连接项目虚拟机ES并运行查询。"""
 
     args = build_parser().parse_args()
     settings = Settings.from_env()
